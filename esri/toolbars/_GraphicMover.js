@@ -1,0 +1,19 @@
+/*
+ COPYRIGHT 2009 ESRI
+
+ TRADE SECRETS: ESRI PROPRIETARY AND CONFIDENTIAL
+ Unpublished material - all rights reserved under the
+ Copyright Laws of the United States and applicable international
+ laws, treaties, and conventions.
+
+ For additional information, contact:
+ Environmental Systems Research Institute, Inc.
+ Attn: Contracts and Legal Services Department
+ 380 New York Street
+ Redlands, California, 92373
+ USA
+
+ email: contracts@esri.com
+ */
+//>>built
+define(["dijit","dojo","dojox","dojo/require!dojox/gfx/move"],function(_1,_2,_3){_2.provide("esri.toolbars._GraphicMover");_2.require("dojox.gfx.move");_2.declare("esri.toolbars._Mover",_3.gfx.Mover,{constructor:function(_4,e,_5){this.__e=e;}});_2.declare("esri.toolbars._GraphicMover",null,{constructor:function(_6,_7,_8){this.graphic=_6;this.map=_7;this.toolbar=_8;this._enableGraphicMover();this._moved=false;},refresh:function(_9){var _a=this.graphic.getDojoShape();if(_a&&(_9||!_a._hostGraphic)){this._disableGraphicMover();this._enableGraphicMover();}},destroy:function(){this._disableGraphicMover();},hasMoved:function(){return this._moved;},_enableGraphicMover:function(){var _b=this.graphic;var _c=_b.getDojoShape();if(_c){_c._hostGraphic=_b;this._moveable=new _3.gfx.Moveable(_c,{mover:esri.toolbars._Mover});this._moveStartHandle=_2.connect(this._moveable,"onMoveStart",this,this._moveStartHandler);this._firstMoveHandle=_2.connect(this._moveable,"onFirstMove",this,this._firstMoveHandler);this._movingHandle=_2.connect(this._moveable,"onMoving",this,this._movingHandler);this._moveStopHandle=_2.connect(this._moveable,"onMoveStop",this,this._moveStopHandler);var _d=_c.getEventSource();if(_d){_2.style(_d,"cursor",this.toolbar._cursors.move);}}},_disableGraphicMover:function(){var _e=this._moveable;if(_e){_2.disconnect(this._moveStartHandle);_2.disconnect(this._firstMoveHandle);_2.disconnect(this._movingHandle);_2.disconnect(this._moveStopHandle);var _f=_e.shape;if(_f){_f._hostGraphic=null;var _10=_f.getEventSource();if(_10){_2.style(_10,"cursor",null);}}_e.destroy();}this._moveable=null;},_moveStartHandler:function(){var _11=this.graphic;this._startTx=_11.getDojoShape().getTransform();if(this.graphic.geometry.type==="point"){var map=this.map;if(map.snappingManager){map.snappingManager._setUpSnapping();}}this.toolbar.onGraphicMoveStart(_11);},_firstMoveHandler:function(){this.toolbar._beginOperation("MOVE");this.toolbar.onGraphicFirstMove(this.graphic);},_movingHandler:function(_12){this.toolbar.onGraphicMove(this.graphic,_12.shape.getTransform());},_moveStopHandler:function(_13){var _14=this.graphic,map=this.map,mx=_3.gfx.matrix,_15=_14.geometry,_16=_15.type,_17=_14.getDojoShape(),tx=_17.getTransform();if(_2.toJson(tx)!==_2.toJson(this._startTx)){this._moved=true;switch(_16){case "point":var _18=[tx,mx.invert(this._startTx)];var _19;if(map.snappingManager){_19=map.snappingManager._snappingPoint;}_15=_19||map.toMap(mx.multiplyPoint(_18,map.toScreen(_15,true)));if(map.snappingManager){map.snappingManager._killOffSnapping();}break;case "polyline":_15=this._updatePolyGeometry(_15,_15.paths,tx);break;case "polygon":_15=this._updatePolyGeometry(_15,_15.rings,tx);break;}_17.setTransform(null);_14.setGeometry(_15);}else{this._moved=false;}this.toolbar._endOperation("MOVE");this.toolbar.onGraphicMoveStop(_14,tx);if(!this._moved){var e=_13.__e,_1a=this.map.position,pt=new esri.geometry.Point(e.pageX-_1a.x,e.pageY-_1a.y);this.toolbar.onGraphicClick(_14,{screenPoint:pt,mapPoint:this.map.toMap(pt)});}},_updatePolyGeometry:function(_1b,_1c,_1d){var map=this.map;var _1e=_1b.getPoint(0,0);var _1f=map.toMap(map.toScreen(_1e).offset(_1d.dx,_1d.dy));var _20=_1f.x-_1e.x;var _21=_1f.y-_1e.y;for(var i=0;i<_1c.length;i++){var seg=_1c[i];for(var j=0;j<seg.length;j++){var _22=_1b.getPoint(i,j);_1b.setPoint(i,j,_22.offset(_20,_21));}}return _1b;}});});

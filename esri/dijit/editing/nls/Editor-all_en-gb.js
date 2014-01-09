@@ -1,0 +1,27 @@
+require({cache:{
+'dijit/form/nls/en/validate':function(){
+define('dijit/form/nls/en/validate',{});
+},
+'dijit/form/nls/en-gb/validate':function(){
+define('dijit/form/nls/en-gb/validate',{});
+},
+'dijit/_editor/nls/en/commands':function(){
+define('dijit/_editor/nls/en/commands',{});
+},
+'dijit/_editor/nls/en-gb/commands':function(){
+define('dijit/_editor/nls/en-gb/commands',{});
+},
+'dijit/nls/en/loading':function(){
+define('dijit/nls/en/loading',{});
+},
+'dijit/nls/en-gb/loading':function(){
+define('dijit/nls/en-gb/loading',{});
+},
+'dijit/form/nls/en/ComboBox':function(){
+define('dijit/form/nls/en/ComboBox',{});
+},
+'dijit/form/nls/en-gb/ComboBox':function(){
+define('dijit/form/nls/en-gb/ComboBox',{});
+},
+'*noref':1}});
+define("esri/dijit/editing/nls/Editor-all_en-gb", [], 1);
